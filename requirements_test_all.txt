@@ -1805,6 +1805,9 @@ python-technove==1.2.2
 # homeassistant.components.telegram_bot
 python-telegram-bot[socks]==21.0.1
 
+# homeassistant.components.whois
+python-whois==0.9.4
+
 # homeassistant.components.tile
 pytile==2023.12.0
 
@@ -2223,9 +2226,6 @@ webrtc-noise-gain==1.2.3
 
 # homeassistant.components.whirlpool
 whirlpool-sixth-sense==0.18.8
-
-# homeassistant.components.whois
-whois==0.9.27
 
 # homeassistant.components.wiffi
 wiffi==1.1.2

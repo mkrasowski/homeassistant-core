@@ -2320,6 +2320,9 @@ python-telegram-bot[socks]==21.0.1
 # homeassistant.components.vlc
 python-vlc==3.0.18122
 
+# homeassistant.components.whois
+python-whois==0.9.4
+
 # homeassistant.components.egardia
 pythonegardia==1.0.52
 
@@ -2864,9 +2867,6 @@ webrtc-noise-gain==1.2.3
 
 # homeassistant.components.whirlpool
 whirlpool-sixth-sense==0.18.8
-
-# homeassistant.components.whois
-whois==0.9.27
 
 # homeassistant.components.wiffi
 wiffi==1.1.2

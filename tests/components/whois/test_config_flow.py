@@ -4,12 +4,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from syrupy.assertion import SnapshotAssertion
-from whois.exceptions import (
-    FailedParsingWhoisOutput,
-    UnknownDateFormat,
-    UnknownTld,
-    WhoisCommandFailed,
-)
+from whois.parser import PywhoisError
 
 from homeassistant.components.whois.const import DOMAIN
 from homeassistant.config_entries import SOURCE_USER
@@ -45,13 +40,43 @@ async def test_full_user_flow(
     assert len(mock_setup_entry.mock_calls) == 1
 
 
+async def test_full_user_flow_acceptable_error(
+    hass: HomeAssistant,
+    mock_setup_entry: AsyncMock,
+    mock_whois: MagicMock,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test the full user configuration flow when an acceptable error occurs."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": SOURCE_USER}
+    )
+
+    assert result.get("type") is FlowResultType.FORM
+    assert result.get("step_id") == "user"
+
+    mock_whois.side_effect = PywhoisError('No match for "DOMAIN.COM"')
+
+    result2 = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        user_input={CONF_DOMAIN: "Example.com"},
+    )
+
+    assert result2.get("type") is FlowResultType.CREATE_ENTRY
+    assert result2 == snapshot
+
+    assert len(mock_setup_entry.mock_calls) == 1
+
+
 @pytest.mark.parametrize(
-    ("throw", "reason"),
+    ("throw", "error_text", "reason"),
     [
-        (UnknownTld, "unknown_tld"),
-        (FailedParsingWhoisOutput, "whois_command_failed"),
-        (UnknownDateFormat, "whois_command_failed"),
-        (WhoisCommandFailed, "whois_command_failed"),
+        (
+            PywhoisError,
+            "No whois server is known for this kind of object",
+            "unknown_tld",
+        ),
+        (PywhoisError, "This TLD has no whois server", "unknown_tld"),
+        (PywhoisError, "(any other error message)", "whois_command_failed"),
     ],
 )
 async def test_full_flow_with_error(
@@ -60,6 +85,7 @@ async def test_full_flow_with_error(
     mock_whois: MagicMock,
     snapshot: SnapshotAssertion,
     throw: Exception,
+    error_text: str,
     reason: str,
 ) -> None:
     """Test the full user configuration flow with an error.
@@ -74,7 +100,7 @@ async def test_full_flow_with_error(
     assert result.get("type") is FlowResultType.FORM
     assert result.get("step_id") == "user"
 
-    mock_whois.side_effect = throw
+    mock_whois.side_effect = throw(error_text)
     result2 = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         user_input={CONF_DOMAIN: "Example.com"},

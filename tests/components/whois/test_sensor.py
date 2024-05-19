@@ -57,7 +57,7 @@ async def test_whois_sensors(
 async def test_whois_sensors_missing_some_attrs(
     hass: HomeAssistant, entity_registry: er.EntityRegistry, snapshot: SnapshotAssertion
 ) -> None:
-    """Test the Whois sensors with owner and reseller missing."""
+    """Test the Whois sensors with some attributes missing."""
     assert (state := hass.states.get("sensor.home_assistant_io_last_updated"))
     assert state == snapshot
 

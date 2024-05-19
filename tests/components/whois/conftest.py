@@ -42,25 +42,33 @@ def mock_setup_entry() -> Generator[AsyncMock, None, None]:
 def mock_whois() -> Generator[MagicMock, None, None]:
     """Return a mocked query."""
     with patch(
-        "homeassistant.components.whois.helper.whois.query",
+        "homeassistant.components.whois.helper.ext_whois.whois",
     ) as whois_mock:
-        domain = whois_mock.return_value
-        domain.abuse_contact = "abuse@example.com"
-        domain.admin = "admin@example.com"
-        domain.creation_date = datetime(2019, 1, 1, 0, 0, 0)
-        domain.dnssec = True
-        domain.expiration_date = datetime(2023, 1, 1, 0, 0, 0)
-        domain.last_updated = datetime(
-            2022, 1, 1, 0, 0, 0, tzinfo=dt_util.get_time_zone("Europe/Amsterdam")
-        )
-        domain.name = "home-assistant.io"
-        domain.name_servers = ["ns1.example.com", "ns2.example.com"]
-        domain.owner = "owner@example.com"
-        domain.registrant = "registrant@example.com"
-        domain.registrar = "My Registrar"
-        domain.reseller = "Top Domains, Low Prices"
-        domain.status = "OK"
-        domain.statuses = ["OK"]
+        mock_data = {
+            "domain_name": ["HOME-ASSISTANT.IO"],
+            "admin": "Admin",
+            "creation_date": datetime(2019, 1, 1, 0, 0, 0),
+            "dnssec": "signedDelegation",
+            "expiration_date": datetime(2023, 1, 1, 0, 0, 0),
+            "updated_date": [
+                datetime(
+                    2022,
+                    1,
+                    1,
+                    0,
+                    0,
+                    0,
+                    tzinfo=dt_util.get_time_zone("Europe/Amsterdam"),
+                ),
+                datetime(2023, 11, 20, 6, 55, 46, 110000),
+            ],
+            "name_servers": ["NS1.example.COM", "ns2.EXAMPLE.com"],
+            "registrant_name": "registrant@example.com",
+            "registrar": "My Registrar",
+            "status": "OK",
+        }
+
+        whois_mock.return_value = mock_data
         yield whois_mock
 
 
@@ -68,20 +76,21 @@ def mock_whois() -> Generator[MagicMock, None, None]:
 def mock_whois_missing_some_attrs() -> Generator[Mock, None, None]:
     """Return a mocked query that only sets one attribute."""
     with patch(
-        "homeassistant.components.whois.helper.whois.query",
+        "homeassistant.components.whois.helper.ext_whois.whois",
     ) as whois_mock:
-        domain = whois_mock.return_value
-        domain.last_updated = datetime(
-            2022, 1, 1, 0, 0, 0, tzinfo=dt_util.get_time_zone("Europe/Amsterdam")
-        )
-        yield domain
+        whois_mock.return_value = {
+            "updated_date": datetime(
+                2022, 1, 1, 0, 0, 0, tzinfo=dt_util.get_time_zone("Europe/Amsterdam")
+            )
+        }
+        yield whois_mock
 
 
 @pytest.fixture
 def mock_whois_empty() -> Generator[Mock, None, None]:
     """Mock an empty response from the whois library."""
     with patch(
-        "homeassistant.components.whois.helper.whois.query",
+        "homeassistant.components.whois.helper.ext_whois.whois",
     ) as whois_mock:
         whois_mock.return_value = None
         yield whois_mock

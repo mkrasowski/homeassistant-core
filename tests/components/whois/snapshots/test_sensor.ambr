@@ -9,7 +9,7 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'admin@example.com',
+    'state': 'Admin',
   })
 # ---
 # name: test_whois_sensors[sensor.home_assistant_io_admin].1
@@ -397,7 +397,7 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'owner@example.com',
+    'state': 'registrant@example.com',
   })
 # ---
 # name: test_whois_sensors[sensor.home_assistant_io_owner].1
@@ -625,7 +625,7 @@
     'last_changed': <ANY>,
     'last_reported': <ANY>,
     'last_updated': <ANY>,
-    'state': 'Top Domains, Low Prices',
+    'state': 'unknown',
   })
 # ---
 # name: test_whois_sensors[sensor.home_assistant_io_reseller].1
