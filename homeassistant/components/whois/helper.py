@@ -20,7 +20,6 @@ class Domain:
     name_servers: Any = None
     owner: Any = None
     registrar: Any = None
-    reseller: Any = None
     registrant: Any = None
     status: Any = None
     statuses: Any = None
@@ -65,7 +64,6 @@ def query(domain: str) -> Domain | None:
         name_servers=get_attr_name_servers(wh),
         owner=get_attr_owner(wh),
         registrar=get_attr_generic_single(wh, "registrar"),
-        reseller=None,
         registrant=get_attr_owner(wh),
         dnssec=get_attr_dnssec(wh),
         status=get_attr_generic_single(wh, "status"),

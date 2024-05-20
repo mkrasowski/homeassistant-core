@@ -15,9 +15,6 @@
       },
       "registrar": {
         "default": "mdi:store"
-      },
-      "reseller": {
-        "default": "mdi:store"
       }
     }
   }

@@ -40,9 +40,6 @@
       },
       "registrar": {
         "name": "Registrar"
-      },
-      "reseller": {
-        "name": "Reseller"
       }
     }
   }
